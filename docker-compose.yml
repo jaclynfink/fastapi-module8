@@ -1,0 +1,28 @@
+# Version Specification
+version: '3.8'  # Specify the version of Docker Compose syntax to use.
+
+# Services Definition
+services:
+  # Service: web
+  web:
+    # Build Configuration
+    build: .  # Instructs Docker Compose to build the Docker image using the Dockerfile located in the current directory (denoted by '.').
+    
+    # Container Naming
+    container_name: fastapi_calculator  # Assigns a custom name "fastapi_calculator" to the container. This makes it easier to reference the container in Docker commands.
+    
+    # Port Mapping
+    ports:
+      - "8000:8000"  # Maps port 8000 on the host machine to port 8000 in the Docker container. This allows access to the FastAPI application via localhost:8000 on the host.
+    
+    # Volume Mounting
+    volumes:
+      - .:/app  # Mounts the current directory (host) to the `/app` directory inside the container. This facilitates live updates by reflecting changes made in the host directory within the container without rebuilding the image.
+    
+    # Environment Variables
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1  # Prevents Python from writing `.pyc` files to disk. This ensures that only source code is maintained, keeping the container clean.
+      - PYTHONUNBUFFERED=1  # Forces Python to flush the output buffer immediately. This is useful for real-time logging, ensuring that logs are visible as they are generated.
+    
+    # Command Execution
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload  
