@@ -6,6 +6,7 @@ from fastapi.exceptions import RequestValidationError
 from app.operations import add, subtract, multiply, divide  # Ensure correct import path
 import uvicorn
 import logging
+import time
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -21,7 +22,7 @@ class OperationRequest(BaseModel):
     a: float = Field(..., description="The first number")
     b: float = Field(..., description="The second number")
 
-    @field_validator('a', 'b')  # Correct decorator for Pydantic 1.x
+    @field_validator('a', 'b')
     def validate_numbers(cls, value):
         if not isinstance(value, (int, float)):
             raise ValueError('Both a and b must be numbers.')
@@ -59,12 +60,14 @@ async def read_root(request: Request):
     """
     Serve the index.html template.
     """
+    logger.info("Serving index template")
     return templates.TemplateResponse(request, "index.html")
 
 
 @app.get("/health")
 async def health_check():
     """Basic health endpoint for container checks."""
+    logger.info("Health check requested")
     return {"status": "ok"}
 
 @app.post("/add", response_model=OperationResponse, responses={400: {"model": ErrorResponse}})
@@ -73,7 +76,9 @@ async def add_route(operation: OperationRequest):
     Add two numbers.
     """
     try:
+        logger.info(f"Add requested with a={operation.a}, b={operation.b}")
         result = add(operation.a, operation.b)
+        logger.info(f"Add result: {result}")
         return OperationResponse(result=result)
     except Exception as e:
         logger.error(f"Add Operation Error: {str(e)}")
@@ -85,7 +90,9 @@ async def subtract_route(operation: OperationRequest):
     Subtract two numbers.
     """
     try:
+        logger.info(f"Subtract requested with a={operation.a}, b={operation.b}")
         result = subtract(operation.a, operation.b)
+        logger.info(f"Subtract result: {result}")
         return OperationResponse(result=result)
     except Exception as e:
         logger.error(f"Subtract Operation Error: {str(e)}")
@@ -97,7 +104,9 @@ async def multiply_route(operation: OperationRequest):
     Multiply two numbers.
     """
     try:
+        logger.info(f"Multiply requested with a={operation.a}, b={operation.b}")
         result = multiply(operation.a, operation.b)
+        logger.info(f"Multiply result: {result}")
         return OperationResponse(result=result)
     except Exception as e:
         logger.error(f"Multiply Operation Error: {str(e)}")
@@ -109,7 +118,9 @@ async def divide_route(operation: OperationRequest):
     Divide two numbers.
     """
     try:
+        logger.info(f"Divide requested with a={operation.a}, b={operation.b}")
         result = divide(operation.a, operation.b)
+        logger.info(f"Divide result: {result}")
         return OperationResponse(result=result)
     except ValueError as e:
         logger.error(f"Divide Operation Error: {str(e)}")

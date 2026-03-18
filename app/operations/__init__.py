@@ -18,10 +18,13 @@ These functions can be imported and used in other modules or integrated into API
 to perform arithmetic operations based on user input.
 """
 
+import logging
 from typing import Union  # Import Union for type hinting multiple possible types
 
 # Define a type alias for numbers that can be either int or float
 Number = Union[int, float]
+
+logger = logging.getLogger(__name__)
 
 def add(a: Number, b: Number) -> Number:
     """
@@ -40,8 +43,10 @@ def add(a: Number, b: Number) -> Number:
     >>> add(2.5, 3)
     5.5
     """
+    logger.info(f"Operation add started: a={a}, b={b}")
     # Perform addition of a and b
     result = a + b
+    logger.info(f"Operation add completed: result={result}")
     return result
 
 def subtract(a: Number, b: Number) -> Number:
@@ -61,8 +66,10 @@ def subtract(a: Number, b: Number) -> Number:
     >>> subtract(5.5, 2)
     3.5
     """
+    logger.info(f"Operation subtract started: a={a}, b={b}")
     # Perform subtraction of b from a
     result = a - b
+    logger.info(f"Operation subtract completed: result={result}")
     return result
 
 def multiply(a: Number, b: Number) -> Number:
@@ -82,8 +89,10 @@ def multiply(a: Number, b: Number) -> Number:
     >>> multiply(2.5, 4)
     10.0
     """
+    logger.info(f"Operation multiply started: a={a}, b={b}")
     # Perform multiplication of a and b
     result = a * b
+    logger.info(f"Operation multiply completed: result={result}")
     return result
 
 def divide(a: Number, b: Number) -> float:
@@ -110,11 +119,14 @@ def divide(a: Number, b: Number) -> float:
         ...
     ValueError: Cannot divide by zero!
     """
+    logger.info(f"Operation divide started: a={a}, b={b}")
     # Check if the divisor is zero to prevent division by zero
     if b == 0:
         # Raise a ValueError with a descriptive message
+        logger.error("Operation divide failed: division by zero")
         raise ValueError("Cannot divide by zero!")
     
     # Perform division of a by b and return the result as a float
     result = a / b
+    logger.info(f"Operation divide completed: result={result}")
     return result
